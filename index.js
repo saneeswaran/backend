@@ -18,8 +18,14 @@ app.use("/image/category", express.static("public/category"));
 app.use("/image/poster", express.static("public/posters"));
 
 // Connect to MongoDB
-const URL = process.env.MONGO_URL;
-mongoose.connect(URL);
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected successfully on port 3000"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to Database"));

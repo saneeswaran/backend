@@ -52,12 +52,10 @@ router.post(
   asyncHandler(async (req, res) => {
     const { name, subcategoryId } = req.body;
     if (!name || !subcategoryId) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Name and subcategory ID are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Name and subcategory ID are required.",
+      });
     }
 
     try {
@@ -81,12 +79,10 @@ router.put(
     const brandID = req.params.id;
     const { name, subcategoryId } = req.body;
     if (!name || !subcategoryId) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Name and subcategory ID are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Name and subcategory ID are required.",
+      });
     }
 
     try {
@@ -120,12 +116,10 @@ router.delete(
       // Check if any products reference this brand
       const products = await Product.find({ proBrandId: brandID });
       if (products.length > 0) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Cannot delete brand. Products are referencing it.",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Cannot delete brand. Products are referencing it.",
+        });
       }
 
       // If no products are referencing the brand, proceed with deletion
