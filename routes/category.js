@@ -3,8 +3,24 @@ const router = express.Router();
 const Category = require("../model/category");
 const SubCategory = require("../model/subCategory");
 const Product = require("../model/product");
-const { uploadCategory } = require("../uploadFile");
 const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
+const categoryImageDir = "path/to/category/images"; // Define the directory for category images
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    fs.mkdirSync(categoryImageDir, { recursive: true }); // Ensure directory exists
+    cb(null, categoryImageDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+
+const uploadCategory = multer({ storage: storage });
+
 const asyncHandler = require("express-async-handler");
 
 // Get all categories
@@ -167,24 +183,19 @@ router.delete(
       // Check if any subcategories reference this category
       const subcategories = await SubCategory.find({ categoryId: categoryID });
       if (subcategories.length > 0) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message:
-              "Cannot delete category. Subcategories are referencing it.",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Cannot delete category. Subcategories are referencing it.",
+        });
       }
 
       // Check if any products reference this category
       const products = await Product.find({ proCategoryId: categoryID });
       if (products.length > 0) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Cannot delete category. Products are referencing it.",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Cannot delete category. Products are referencing it.",
+        });
       }
 
       // If no subcategories or products are referencing the category, proceed with deletion

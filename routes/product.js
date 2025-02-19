@@ -4,6 +4,8 @@ const Product = require("../model/product");
 const multer = require("multer");
 const { uploadProduct } = require("../uploadFile");
 const asyncHandler = require("express-async-handler");
+const fs = require("fs");
+const path = require("path");
 
 // Get all products
 router.get(
@@ -26,6 +28,12 @@ router.get(
     }
   })
 );
+const productImageDir = path.join(__dirname, "../public/image/products");
+
+// Ensure the directory exists
+if (!fs.existsSync(productImageDir)) {
+  fs.mkdirSync(productImageDir, { recursive: true });
+}
 
 // Get a product by ID
 router.get(
@@ -60,6 +68,17 @@ router.post(
   "/",
   asyncHandler(async (req, res) => {
     try {
+      const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+          cb(null, productImageDir); // ✅ Save in the correct folder
+        },
+        filename: (req, file, cb) => {
+          cb(null, `${Date.now()}_${file.originalname}`);
+        },
+      });
+
+      const uploadProduct = multer({ storage: storage });
+
       // Execute the Multer middleware to handle multiple file fields
       uploadProduct.fields([
         { name: "image1", maxCount: 1 },
