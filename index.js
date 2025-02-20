@@ -21,6 +21,11 @@ const staticPaths = {
   category: path.join(__dirname, "public", "image", "category"),
   poster: path.join(__dirname, "public", "image", "posters"),
 };
+app.use(
+  "/image/poster",
+  express.static(path.join(__dirname, "public/posters"))
+);
+const categoryImageDir = path.join(__dirname, "../public/images/category");
 
 // Serve static images
 app.use("/image/products", express.static(staticPaths.products));
@@ -56,6 +61,12 @@ app.use("/users", require("./routes/user"));
 app.use("/orders", require("./routes/order"));
 app.use("/payment", require("./routes/payment"));
 app.use("/notification", require("./routes/notification"));
+app.use("/image", express.static("public/image"));
+app.use("/image", express.static("public"));
+app.use(
+  "/image/category",
+  express.static(path.join(__dirname, "public/images/category"))
+);
 
 // Test API route
 app.get(
@@ -77,5 +88,5 @@ app.use((error, req, res, next) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://192.168.1.5:${PORT}`);
+  console.log(`🚀 Server running on http://192.168.1.2:${PORT}`);
 });

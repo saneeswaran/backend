@@ -7,11 +7,15 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const categoryImageDir = "path/to/category/images"; // Define the directory for category images
+const categoryImageDir = path.join(__dirname, "../public/images/category");
+
+// Ensure directory exists before saving files
+if (!fs.existsSync(categoryImageDir)) {
+  fs.mkdirSync(categoryImageDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    fs.mkdirSync(categoryImageDir, { recursive: true }); // Ensure directory exists
     cb(null, categoryImageDir);
   },
   filename: (req, file, cb) => {
