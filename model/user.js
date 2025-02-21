@@ -18,11 +18,14 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  PlayerId: {
+    type: String,
+  },
 });
 
 // Hash the password before saving the user
-userSchema.pre('save', function(next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password")) {
     return next();
   }
   this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(8), null);
@@ -30,7 +33,7 @@ userSchema.pre('save', function(next) {
 });
 
 // Method to check if password is valid
-userSchema.methods.validPassword = function(password) {
+userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 

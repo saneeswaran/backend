@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const fs = require("fs");
 const path = require("path");
+const notificationRoutes = require("./routes/notification");
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Default port if not defined in .env
@@ -60,13 +61,13 @@ app.use("/posters", require("./routes/poster"));
 app.use("/users", require("./routes/user"));
 app.use("/orders", require("./routes/order"));
 app.use("/payment", require("./routes/payment"));
-app.use("/notification", require("./routes/notification"));
 app.use("/image", express.static("public/image"));
 app.use("/image", express.static("public"));
 app.use(
   "/image/category",
   express.static(path.join(__dirname, "public/images/category"))
 );
+app.use("/notification", notificationRoutes);
 
 // Test API route
 app.get(
